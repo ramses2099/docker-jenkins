@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   jenkins:
     image: jenkins/jenkins:lts
@@ -8,10 +6,15 @@ services:
       - "8085:8080"  # Host port:Container port
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - DOCKER_GID=${DOCKER_GID}
     env_file:
       - ./jenkins.env
+    group_add:
+      - ${DOCKER_GID}
 
 volumes:
   jenkins_home:
